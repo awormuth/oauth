@@ -386,15 +386,15 @@ func (p pairs) Less(i, j int) bool { return p[i].key < p[j].key }
 func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (resp *http.Response, err error) {
-	allParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
+	AllParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
 
 	// Do not add the "oauth_token" parameter, if the access token has not been
 	// specified. By omitting this parameter when it is not specified, allows
 	// two-legged OAuth calls.
 	if len(token.Token) > 0 {
-		allParams.Add(TOKEN_PARAM, token.Token)
+		AllParams.Add(TOKEN_PARAM, token.Token)
 	}
-	authParams := allParams.Clone()
+	authParams := AllParams.Clone()
 
 	// Sort parameters alphabetically (primarily for testability / repeatability)
 	paramPairs := make(pairs, len(userParams))
@@ -413,7 +413,7 @@ func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation
 
 	if userParams != nil {
 		for i := range paramPairs {
-			allParams.Add(paramPairs[i].key, paramPairs[i].value)
+			AllParams.Add(paramPairs[i].key, paramPairs[i].value)
 			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
 			if dataLocation == LOC_URL {
 				queryParams += separator + thisPair
@@ -426,7 +426,7 @@ func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation
 
 	key := c.makeKey(token.Secret)
 
-	base_string := c.requestString(method, url, allParams)
+	base_string := c.requestString(method, url, AllParams)
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
 	contentType := ""
@@ -729,19 +729,19 @@ func (c *Consumer) httpExecute(
 //
 
 type OrderedParams struct {
-	allParams   map[string]string
+	AllParams   map[string]string
 	keyOrdering []string
 }
 
 func NewOrderedParams() *OrderedParams {
 	return &OrderedParams{
-		allParams:   make(map[string]string),
+		AllParams:   make(map[string]string),
 		keyOrdering: make([]string, 0),
 	}
 }
 
 func (o *OrderedParams) Get(key string) string {
-	return o.allParams[key]
+	return o.AllParams[key]
 }
 
 func (o *OrderedParams) Keys() []string {
@@ -754,7 +754,7 @@ func (o *OrderedParams) Add(key, value string) {
 }
 
 func (o *OrderedParams) AddUnescaped(key, value string) {
-	o.allParams[key] = value
+	o.AllParams[key] = value
 	o.keyOrdering = append(o.keyOrdering, key)
 }
 
