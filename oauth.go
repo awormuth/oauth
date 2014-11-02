@@ -207,7 +207,7 @@ func NewConsumer(consumerKey string, consumerSecret string,
 //      - err:
 //        Set only if there was an error, nil otherwise.
 func (c *Consumer) GetRequestTokenAndUrl(callbackUrl string) (rtoken *RequestToken, loginUrl string, err error) {
-	params := c.baseParams(c.consumerKey, c.AdditionalParams)
+	params := c.BaseParams(c.consumerKey, c.AdditionalParams)
 	params.Add(CALLBACK_PARAM, callbackUrl)
 
 	req := newGetRequest(c.serviceProvider.RequestTokenUrl, params)
@@ -307,7 +307,7 @@ func (c *Consumer) RefreshToken(accessToken *AccessToken) (atoken *AccessToken, 
 //      - err:
 //        Set only if there was an error, nil otherwise.
 func (c *Consumer) makeAccessTokenRequest(params map[string]string, secret string) (atoken *AccessToken, err error) {
-	orderedParams := c.baseParams(c.consumerKey, c.AdditionalParams)
+	orderedParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
 	for key, value := range params {
 		orderedParams.Add(key, value)
 	}
@@ -386,7 +386,7 @@ func (p pairs) Less(i, j int) bool { return p[i].key < p[j].key }
 func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (resp *http.Response, err error) {
-	allParams := c.baseParams(c.consumerKey, c.AdditionalParams)
+	allParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
 
 	// Do not add the "oauth_token" parameter, if the access token has not been
 	// specified. By omitting this parameter when it is not specified, allows
