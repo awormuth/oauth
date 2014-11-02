@@ -542,7 +542,7 @@ func parseRequestToken(data string) (*RequestToken, error) {
 	return &RequestToken{tokenParam[0], tokenSecretParam[0]}, nil
 }
 
-func (c *Consumer) BaseParams() *OrderedParams {
+func (c *Consumer) GetBaseParams() *OrderedParams {
 	return c.BaseParams(c.consumerKey, c.AdditionalParams);
 }
 
