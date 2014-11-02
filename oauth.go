@@ -542,7 +542,7 @@ func parseRequestToken(data string) (*RequestToken, error) {
 	return &RequestToken{tokenParam[0], tokenSecretParam[0]}, nil
 }
 
-func (c *Consumer) baseParams(consumerKey string, additionalParams map[string]string) *OrderedParams {
+func (c *Consumer) BaseParams(consumerKey string, additionalParams map[string]string) *OrderedParams {
 	params := NewOrderedParams()
 	params.Add(VERSION_PARAM, OAUTH_VERSION)
 	params.Add(SIGNATURE_METHOD_PARAM, SIGNATURE_METHOD)
