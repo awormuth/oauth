@@ -542,6 +542,10 @@ func parseRequestToken(data string) (*RequestToken, error) {
 	return &RequestToken{tokenParam[0], tokenSecretParam[0]}, nil
 }
 
+func (c *Consumer) BaseParams() *OrderedParams {
+	return c.BaseParams(c.consumerKey, c.AdditionalParams);
+}
+
 func (c *Consumer) BaseParams(consumerKey string, additionalParams map[string]string) *OrderedParams {
 	params := NewOrderedParams()
 	params.Add(VERSION_PARAM, OAUTH_VERSION)
