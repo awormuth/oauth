@@ -402,44 +402,41 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	}
 	authParams := AllParams.Clone()
 
-	// Sort parameters alphabetically (primarily for testability / repeatability)
-	paramPairs := make(pairs, len(userParams))
-	i := 0
-	for key, value := range userParams {
-		paramPairs[i] = pair{key: key, value: value}
-		i++
-	}
-	sort.Sort(paramPairs)
-
 	queryParams := ""
 	separator := "?"
 	if dataLocation == LOC_BODY {
 		separator = ""
 	}
 
-	if userParams != nil {
-		for i := range paramPairs {
-			AllParams.Add(paramPairs[i].key, paramPairs[i].value)
-			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
-			if dataLocation == LOC_URL {
-				queryParams += separator + thisPair
-			} else {
-				body += separator + thisPair
-			}
-			separator = "&"
-		}
-	}
 
 	key := c.makeKey(token.Secret)
 
 	base_string := c.requestString(method, url, AllParams)
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
-	// contentType := ""
-	// if dataLocation == LOC_BODY {
-	// 	contentType = "application/x-www-form-urlencoded"
-	// }
-	return authParams.AllParams
+	// Sort parameters alphabetically (primarily for testability / repeatability)
+	paramPairs := make(pairs, len(userParams) + len(authParams))
+	i := 0
+	for key, value := range userParams {
+		paramPairs[i] = pair{key: key, value: value}
+		i++
+	}
+	for key, value := range authParams {
+		paramPairs[i] = pair{key: key, value: value}
+		i++
+	}
+	sort.Sort(paramPairs)
+
+	result := ""
+	separator := ""
+	if userParams != nil {
+		for i := range paramPairs {
+			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
+			result += separator + thisPair
+			separator = "&"
+		}
+	}
+	return result
 }
 
 
