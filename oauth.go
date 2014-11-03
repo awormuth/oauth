@@ -431,9 +431,16 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	separator := ""
 
 	for key, value := range authParams.AllParams {
-		thisPair := escape(key) + "=" + escape(value)
-		result += separator + thisPair
-		separator = "&"
+		if key == "oauth_signature" {
+			//DONT DOUBLE URL ENCODE THE SIGNIATURE HEU HEU HEU HEUEHUH UEHUH E. K THX.
+			thisPair := key + "=" + value
+			result += separator + thisPair
+			separator = "&"
+		} else {
+			thisPair := escape(key) + "=" + escape(value)
+			result += separator + thisPair
+			separator = "&"
+		}
 	}
 
 	return result
