@@ -435,10 +435,10 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	base_string := c.requestString(method, url, AllParams)
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
-	contentType := ""
-	if dataLocation == LOC_BODY {
-		contentType = "application/x-www-form-urlencoded"
-	}
+	// contentType := ""
+	// if dataLocation == LOC_BODY {
+	// 	contentType = "application/x-www-form-urlencoded"
+	// }
 	return authParams.AllParams
 }
 
