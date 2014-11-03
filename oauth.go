@@ -212,7 +212,8 @@ func (c *Consumer) GetRequestTokenAndUrl(callbackUrl string) (rtoken *RequestTok
 
 	req := newGetRequest(c.serviceProvider.RequestTokenUrl, params)
 	c.signRequest(req, c.makeKey("")) // We don't have a token secret for the key yet
-
+	fmt.Println("Withings req token & url:", c.serviceProvider.RequestTokenUrl)
+	fmt.Println("With params: ", params)
 	resp, err := c.getBody(c.serviceProvider.RequestTokenUrl, params)
 	if err != nil {
 		return nil, "", errors.New("getBody: " + err.Error())
@@ -402,15 +403,11 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	}
 	authParams := AllParams.Clone()
 
-	key := c.makeKey(token.Secret)
-
-	base_string := c.requestString(method, url, AllParams)
-	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
-
 	// Sort parameters alphabetically (primarily for testability / repeatability)
 	paramPairs := make(pairs, len(userParams) + len(authParams.AllParams))
 	i := 0
 	for key, value := range userParams {
+		AllParams.Add(paramPairs[i].key, paramPairs[i].value)
 		paramPairs[i] = pair{key: key, value: value}
 		i++
 	}
@@ -419,6 +416,11 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 		i++
 	}
 	sort.Sort(paramPairs)
+
+	key := c.makeKey(token.Secret)
+
+	base_string := c.requestString(method, url, AllParams)
+	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
 	result := ""
 	separator := ""
