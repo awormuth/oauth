@@ -415,13 +415,13 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
 	// Sort parameters alphabetically (primarily for testability / repeatability)
-	paramPairs := make(pairs, len(userParams) + len(authParams))
+	paramPairs := make(pairs, len(userParams) + len(authParams.AllParams))
 	i := 0
 	for key, value := range userParams {
 		paramPairs[i] = pair{key: key, value: value}
 		i++
 	}
-	for key, value := range authParams {
+	for key, value := range authParams.AllParams {
 		paramPairs[i] = pair{key: key, value: value}
 		i++
 	}
