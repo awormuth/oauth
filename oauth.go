@@ -409,7 +409,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	// paramPairs := make(pairs, len(userParams))
 	// i := 0
 	for key, value := range userParams {
-		AllParams.Add(value)
+		AllParams.Add(key, value)
 		// AllParams.Add(paramPairs[i].key, paramPairs[i].value)
 		// paramPairs[i] = pair{key: key, value: value}
 		// i++
