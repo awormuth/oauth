@@ -402,13 +402,6 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	}
 	authParams := AllParams.Clone()
 
-	queryParams := ""
-	separator := "?"
-	if dataLocation == LOC_BODY {
-		separator = ""
-	}
-
-
 	key := c.makeKey(token.Secret)
 
 	base_string := c.requestString(method, url, AllParams)
@@ -428,7 +421,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	sort.Sort(paramPairs)
 
 	result := ""
-	separator = ""
+	separator := ""
 	if userParams != nil {
 		for i := range paramPairs {
 			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
