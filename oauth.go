@@ -212,8 +212,8 @@ func (c *Consumer) GetRequestTokenAndUrl(callbackUrl string) (rtoken *RequestTok
 
 	req := newGetRequest(c.serviceProvider.RequestTokenUrl, params)
 	c.signRequest(req, c.makeKey("")) // We don't have a token secret for the key yet
-	fmt.Println("Withings req token & url:", c.serviceProvider.RequestTokenUrl)
-	fmt.Println("With params: ", params)
+	// fmt.Println("Withings req token & url:", c.serviceProvider.RequestTokenUrl)
+	// fmt.Println("With params: ", params)
 	resp, err := c.getBody(c.serviceProvider.RequestTokenUrl, params)
 	if err != nil {
 		return nil, "", errors.New("getBody: " + err.Error())
@@ -342,12 +342,12 @@ func (c *Consumer) makeAccessTokenRequest(params map[string]string, secret strin
 //        Set only if there was an error, nil otherwise.
 
 func (c *Consumer) GetAuthParamsForURL(url string, userParams map[string]string, token *AccessToken) (string) {
-	fmt.Println("Get called in modified GetParamsinURL method\n")
+	// fmt.Println("Get called in modified GetParamsinURL method\n")
 	return c.pullAuthParams("GET", url, LOC_URL, "", userParams, token)
 }
 
 func (c *Consumer) Get(url string, userParams map[string]string, token *AccessToken) (resp *http.Response, err error) {
-	fmt.Println("Get called in normal GET method\n")
+	// fmt.Println("Get called in normal GET method\n")
 	return c.makeAuthorizedRequest("GET", url, LOC_URL, "", userParams, token)
 }
 
@@ -424,8 +424,8 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
-	fmt.Println("Base string: ", base_string)
-	fmt.Println("auth params: ", authParams.AllParams)
+	// fmt.Println("Base string: ", base_string)
+	// fmt.Println("auth params: ", authParams.AllParams)
 
 	result := ""
 	separator := ""
@@ -548,8 +548,8 @@ func (c *Consumer) signRequest(req *request, key string) *request {
 }
 
 func (c *Consumer) makeKey(tokenSecret string) string {
-	fmt.Println("Consumer secret: ", c.consumerSecret)
-	fmt.Println("Token secret: ", tokenSecret)
+	// fmt.Println("Consumer secret: ", c.consumerSecret)
+	// fmt.Println("Token secret: ", tokenSecret)
 	return escape(c.consumerSecret) + "&" + escape(tokenSecret)
 }
 
@@ -646,7 +646,7 @@ func (s *SHA1Signer) Sign(message string, key string) string {
 		fmt.Println("Signing:", message)
 		fmt.Println("Key:", key)
 	}
-	fmt.Println("Signature key: ", key)
+	// fmt.Println("Signature key: ", key)
 	hashfun := hmac.New(sha1.New, []byte(key))
 	hashfun.Write([]byte(message))
 	rawsignature := hashfun.Sum(nil)
