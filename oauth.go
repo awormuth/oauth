@@ -340,7 +340,7 @@ func (c *Consumer) makeAccessTokenRequest(params map[string]string, secret strin
 //      - err:
 //        Set only if there was an error, nil otherwise.
 
-func (c *Consumer) GetAuthParamsForURL(url string, userParams map[string]string, token *AccessToken) (map[string]string) {
+func (c *Consumer) GetAuthParamsForURL(url string, userParams map[string]string, token *AccessToken) (string) {
 	fmt.Println("Get called in modified GetParamsinURL method\n")
 	return c.pullAuthParams("GET", url, LOC_URL, "", userParams, token)
 }
