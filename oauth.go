@@ -420,7 +420,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	// }
 	// sort.Sort(paramPairs)
 
-	base_string := c.requestString(method, url, authParams.AllParams)
+	base_string := c.requestString(method, url, authParams)
 
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
