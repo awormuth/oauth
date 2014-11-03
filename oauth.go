@@ -339,8 +339,14 @@ func (c *Consumer) makeAccessTokenRequest(params map[string]string, secret strin
 //
 //      - err:
 //        Set only if there was an error, nil otherwise.
+
+func (c *Consumer) GetAuthParamsForURL(url string, userParams map[string]string, token *AccessToken) (map[string]string) {
+	fmt.Println("Get called in modified GetParamsinURL method\n")
+	return c.pullAuthParams("GET", url, LOC_URL, "", userParams, token)
+}
+
 func (c *Consumer) Get(url string, userParams map[string]string, token *AccessToken) (resp *http.Response, err error) {
-	fmt.Println("HUE HEU HEU EHUEH UE\n")
+	fmt.Println("Get called in normal GET method\n")
 	return c.makeAuthorizedRequest("GET", url, LOC_URL, "", userParams, token)
 }
 
@@ -384,6 +390,58 @@ type pairs []pair
 func (p pairs) Len() int           { return len(p) }
 func (p pairs) Less(i, j int) bool { return p[i].key < p[j].key }
 func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (map[string] string) {
+	AllParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
+
+	// Do not add the "oauth_token" parameter, if the access token has not been
+	// specified. By omitting this parameter when it is not specified, allows
+	// two-legged OAuth calls.
+	if len(token.Token) > 0 {
+		AllParams.Add(TOKEN_PARAM, token.Token)
+	}
+	authParams := AllParams.Clone()
+
+	// Sort parameters alphabetically (primarily for testability / repeatability)
+	paramPairs := make(pairs, len(userParams))
+	i := 0
+	for key, value := range userParams {
+		paramPairs[i] = pair{key: key, value: value}
+		i++
+	}
+	sort.Sort(paramPairs)
+
+	queryParams := ""
+	separator := "?"
+	if dataLocation == LOC_BODY {
+		separator = ""
+	}
+
+	if userParams != nil {
+		for i := range paramPairs {
+			AllParams.Add(paramPairs[i].key, paramPairs[i].value)
+			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
+			if dataLocation == LOC_URL {
+				queryParams += separator + thisPair
+			} else {
+				body += separator + thisPair
+			}
+			separator = "&"
+		}
+	}
+
+	key := c.makeKey(token.Secret)
+
+	base_string := c.requestString(method, url, AllParams)
+	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
+
+	contentType := ""
+	if dataLocation == LOC_BODY {
+		contentType = "application/x-www-form-urlencoded"
+	}
+	return authParams
+}
+
 
 func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (resp *http.Response, err error) {
 	AllParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
