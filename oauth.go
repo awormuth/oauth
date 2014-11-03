@@ -439,7 +439,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	if dataLocation == LOC_BODY {
 		contentType = "application/x-www-form-urlencoded"
 	}
-	return authParams
+	return authParams.AllParams
 }
 
 
