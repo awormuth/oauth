@@ -405,32 +405,36 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 
 	key := c.makeKey(token.Secret)
 
-	base_string := c.requestString(method, url, AllParams)
-	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
-
 	// Sort parameters alphabetically (primarily for testability / repeatability)
-	paramPairs := make(pairs, len(userParams) + len(authParams))
-	i := 0
+	// paramPairs := make(pairs, len(userParams))
+	// i := 0
 	for key, value := range userParams {
-		AllParams.Add(paramPairs[i].key, paramPairs[i].value)
-		paramPairs[i] = pair{key: key, value: value}
-		i++
+		AllParams.Add(value)
+		// AllParams.Add(paramPairs[i].key, paramPairs[i].value)
+		// paramPairs[i] = pair{key: key, value: value}
+		// i++
 	}
-	for key, value := range authParams.AllParams {
-		paramPairs[i] = pair{key: key, value: value}
-		i++
-	}
-	sort.Sort(paramPairs)
+	// for key, value := range authParams.AllParams {
+	// 	paramPairs[i] = pair{key: key, value: value}
+	// 	i++
+	// }
+	// sort.Sort(paramPairs)
+
+	base_string := c.requestString(method, url, AllParams)
+
+	fmt.Println("Base string: ", base_string)
+
+	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
 	result := ""
 	separator := ""
-	if userParams != nil {
-		for i := range paramPairs {
-			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
-			result += separator + thisPair
-			separator = "&"
-		}
+
+	for key, value := range authParams.AllParams {
+		thisPair := escape(key) + "=" + escape(value)
+		result += separator + thisPair
+		separator = "&"
 	}
+
 	return result
 }
 
