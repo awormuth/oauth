@@ -422,7 +422,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 
 	base_string := c.requestString(method, url, AllParams)
 
-	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
+	AllParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
 
 	fmt.Println("Base string: ", base_string)
 	fmt.Println("auth params: ", authParams.AllParams)
@@ -431,7 +431,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	result := ""
 	separator := ""
 
-	for key, value := range authParams.AllParams {
+	for key, value := range AllParams {
 		thisPair := escape(key) + "=" + escape(value)
 		result += separator + thisPair
 		separator = "&"
