@@ -391,7 +391,7 @@ func (p pairs) Len() int           { return len(p) }
 func (p pairs) Less(i, j int) bool { return p[i].key < p[j].key }
 func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (map[string] string) {
+func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLocation, body string, userParams map[string]string, token *AccessToken) (string) {
 	AllParams := c.BaseParams(c.consumerKey, c.AdditionalParams)
 
 	// Do not add the "oauth_token" parameter, if the access token has not been
@@ -428,7 +428,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	sort.Sort(paramPairs)
 
 	result := ""
-	separator := ""
+	separator = ""
 	if userParams != nil {
 		for i := range paramPairs {
 			thisPair := escape(paramPairs[i].key) + "=" + escape(paramPairs[i].value)
