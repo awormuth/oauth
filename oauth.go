@@ -426,7 +426,6 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 
 	fmt.Println("Base string: ", base_string)
 	fmt.Println("auth params: ", authParams.AllParams)
-	fmt.Println("all params: ", AllParams)
 
 	result := ""
 	separator := ""
@@ -542,6 +541,8 @@ func (c *Consumer) signRequest(req *request, key string) *request {
 }
 
 func (c *Consumer) makeKey(tokenSecret string) string {
+	fmt.Println("Consumer secret: ", c.consumerSecret)
+	fmt.Println("Token secret: ", tokenSecret)
 	return escape(c.consumerSecret) + "&" + escape(tokenSecret)
 }
 
