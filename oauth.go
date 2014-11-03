@@ -639,6 +639,7 @@ func (s *SHA1Signer) Sign(message string, key string) string {
 		fmt.Println("Signing:", message)
 		fmt.Println("Key:", key)
 	}
+	fmt.Println("Signature key: ", key)
 	hashfun := hmac.New(sha1.New, []byte(key))
 	hashfun.Write([]byte(message))
 	rawsignature := hashfun.Sum(nil)
