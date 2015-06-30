@@ -423,6 +423,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	base_string := c.requestString(method, url, authParams)
 
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
+	fmt.Println(authParams)
 
 	// fmt.Println("Base string: ", base_string)
 	// fmt.Println("auth params: ", authParams.AllParams)
@@ -431,7 +432,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	separator := ""
 
 	for key, value := range authParams.AllParams {
-		if key == "oauth_signature" {
+		if key == "oauth_signature" || key == "callbackUrl" {
 			//DONT DOUBLE URL ENCODE THE SIGNIATURE HEU HEU HEU HEUEHUH UEHUH E. K THX.
 			thisPair := key + "=" + value
 			result += separator + thisPair
