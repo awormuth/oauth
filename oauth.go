@@ -423,7 +423,7 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	base_string := c.requestString(method, url, authParams)
 
 	authParams.Add(SIGNATURE_PARAM, c.signer.Sign(base_string, key))
-	fmt.Println(authParams)
+	//fmt.Println(authParams)
 
 	// fmt.Println("Base string: ", base_string)
 	// fmt.Println("auth params: ", authParams.AllParams)
@@ -432,8 +432,8 @@ func (c *Consumer) pullAuthParams(method string, url string, dataLocation DataLo
 	separator := ""
 
 	for key, value := range authParams.AllParams {
-		fmt.Println("KEY: ", key)
-		fmt.Println("VALUE: ", value)
+		//fmt.Println("KEY: ", key)
+		//fmt.Println("VALUE: ", value)
 		if key == "oauth_signature" || key == "callbackurl" || key == "comment" {
 			//DONT DOUBLE URL ENCODE THE SIGNIATURE HEU HEU HEU HEUEHUH UEHUH E. K THX.
 			thisPair := key + "=" + value
@@ -646,8 +646,8 @@ func (s *SHA1Signer) Debug(enabled bool) {
 
 func (s *SHA1Signer) Sign(message string, key string) string {
 	if s.debug {
-		fmt.Println("Signing:", message)
-		fmt.Println("Key:", key)
+		//fmt.Println("Signing:", message)
+		//fmt.Println("Key:", key)
 	}
 	// fmt.Println("Signature key: ", key)
 	hashfun := hmac.New(sha1.New, []byte(key))
@@ -656,7 +656,7 @@ func (s *SHA1Signer) Sign(message string, key string) string {
 	base64signature := make([]byte, base64.StdEncoding.EncodedLen(len(rawsignature)))
 	base64.StdEncoding.Encode(base64signature, rawsignature)
 	if s.debug {
-		fmt.Println("Base64 signature:", string(base64signature))
+		//fmt.Println("Base64 signature:", string(base64signature))
 	}
 	return string(base64signature)
 }
@@ -706,8 +706,8 @@ func (c *Consumer) getBody(url string, oauthParams *OrderedParams) (*string, err
 	}
 	bodyStr := string(bodyBytes)
 	if c.debug {
-		fmt.Printf("STATUS: %d %s\n", resp.StatusCode, resp.Status)
-		fmt.Println("BODY RESPONSE: " + bodyStr)
+		//fmt.Printf("STATUS: %d %s\n", resp.StatusCode, resp.Status)
+		//fmt.Println("BODY RESPONSE: " + bodyStr)
 	}
 	return &bodyStr, nil
 }
